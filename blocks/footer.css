@@ -1,0 +1,16 @@
+.footer{
+    font-size: 18px;
+    color: rgba(84, 84, 84, 1);
+    margin: 64px 0;
+}
+
+.footer__copyright{
+    display: flex;
+    justify-content: flex-start;
+}
+
+@media  (max-wigth: 544px) {
+    .footer {
+        font-size: 18px;
+    }
+}
