@@ -1,6 +1,7 @@
 // Vamos encontrar o formulário no DOM
-let formElement = // Use o método querySelector()
+let formElement = document.querySelector('.pop-up')
 
+const pop
 // Em seguida vem o handler do submit
 // ainda não vai enviar para lugar nenhum
 
