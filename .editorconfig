@@ -1,0 +1,19 @@
+# EditorConfig ajuda a manter estilos de codificação consistentes
+root = true
+
+# Regras padrão para todos os arquivos
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+# Arquivos markdown não devem perder espaços no fim da linha
+[*.md]
+trim_trailing_whitespace = false
+
+# Arquivos de configuração com indentação 4 espaços
+[*.{json,yml,yaml}]
+indent_size = 2
