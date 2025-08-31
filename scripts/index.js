@@ -1,31 +1,37 @@
-// Vamos encontrar o formulário no DOM
-let formElement = document.querySelector('.pop-up')
+let formElement = document.querySelector(".pop-up__form");
+let editButton = document.querySelector(".profile__edit");
+let closeButton = document.querySelector(".pop-up__close");
+let popup = document.querySelector("#edit-pop-up");
 
-const pop
-// Em seguida vem o handler do submit
-// ainda não vai enviar para lugar nenhum
+let profileName = document.querySelector(".profile__name");
+let profileRole = document.querySelector(".profile__role");
 
-// Observe que o nome da função começa com um verbo
-// e descreve exatamente o que a função faz
-function handleProfileFormSubmit(evt) {
-    // Esta linha impede o navegador 
-    // de enviar o formulário da forma padrão.
-    evt.preventDefault(); 
-    // Fazendo isso, podemos definir nossa própria forma de enviar o formulário.
-    // Explicaremos em mais detalhes posteriormente.
+let nameInput = document.querySelector('.pop-up__input[name="name"]');
+let roleInput = document.querySelector('.pop-up__input[name="role"]');
 
-    // Vamos encontrar os campos de formulário do DOM
-    let nameInput = // Use querySelector()
-    let jobInput = // Use querySelector()
+function openPopup() {
+  nameInput.value = profileName.textContent;
+  roleInput.value = profileRole.textContent;
 
-    // Pegue os valores de cada campo do valor da propriedade correspondente
-
-    // Selecione os elementos aos quais os valores dos campos serão inseridos
-
-    // Insira novos valores usando a
-    // propriedade textContent
+  popup.style.display = "flex";
 }
 
-// Conecte o handler ao formulário:
-// ele vai observar o evento de submit
-formElement.addEventListener('submit', handleProfileFormSubmit);
+function closePopup() {
+  popup.style.display = "none";
+}
+
+function handleProfileFormSubmit(evt) {
+  evt.preventDefault();
+
+  let nameValue = nameInput.value;
+  let roleValue = roleInput.value;
+
+  profileName.textContent = nameValue;
+  profileRole.textContent = roleValue;
+
+  closePopup();
+}
+
+editButton.addEventListener("click", openPopup);
+closeButton.addEventListener("click", closePopup);
+formElement.addEventListener("submit", handleProfileFormSubmit);

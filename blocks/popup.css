@@ -1,19 +1,17 @@
 .pop-up {
-  display: none;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: fixed;
   font-family: "Inter";
   background-color: rgba(0, 0, 0, 0.5);
   margin: auto;
-  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-}
-.pop-up__opened {
-  display: flex;
+  display: none;
 }
 
 .pop-up__container {
@@ -33,7 +31,7 @@
   right: -40px;
   position: absolute;
   background-color: transparent;
-  background-image: url("../imagens/Close\ Icon.png");
+  background-image: url("../imagens/Close_Icon.png");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -53,12 +51,13 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-top: 27px;
 }
 
 .pop-up__input {
   border: none;
   border-bottom: 1px solid #ccc;
-  padding: 10px 16px;
+  padding: 10px 5px;
   font-size: 16px;
 }
 .pop-up__submit {
