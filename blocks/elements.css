@@ -7,9 +7,7 @@
   margin: 0 auto;
   box-sizing: border-box;
 }
-* {
-  outline: 1 px solid red !important;
-}
+
 .elements__card {
   max-width: 282px;
   width: 100%;
@@ -17,6 +15,7 @@
   background-color: #fff;
   border-radius: 10px;
   margin: 0 auto;
+  position: relative;
 }
 
 .elements__image {
@@ -46,6 +45,23 @@
   text-align: center;
 }
 
+.elements__delete-button {
+  position: absolute;
+  width: 18px;
+  height: 20px;
+  top: 18px;
+  right: 15px;
+  background-image: url("../imagens/Trash.png");
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+}
+
+.elements__delete-button:hover {
+  opacity: 0.5;
+}
 .elements__like {
   background-image: url("../imagens/like.png");
   background-color: transparent;
@@ -56,6 +72,12 @@
   cursor: pointer;
   width: 21px;
   height: 19px;
+}
+.elements__like_active {
+  background-image: url("../imagens/like_active.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .elements__like:hover {

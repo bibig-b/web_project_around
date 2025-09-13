@@ -39,98 +39,7 @@
             type="button"
           ></button>
         </section>
-        <section class="elements">
-          <div class="elements__card">
-            <img
-              src="./imagens/card__image-yosemite.png"
-              alt="Vale Yosemite"
-              class="elements__image"
-            />
-            <div class="elements__places">
-              <p class="elements__place">Vale de Yosemite</p>
-              <button
-                class="elements__like"
-                aria-label="Botão like"
-                type="button"
-              ></button>
-            </div>
-          </div>
-          <div class="elements__card">
-            <img
-              src="imagens/card__image-louise.png"
-              alt="Lago Louise"
-              class="elements__image"
-            />
-            <div class="elements__places">
-              <p class="elements__place">Lago Louise</p>
-              <button
-                class="elements__like"
-                aria-label="Botão like"
-                type="button"
-              ></button>
-            </div>
-          </div>
-          <div class="elements__card">
-            <img
-              src="imagens/card__image-smoky.png"
-              alt="Montanhas Carecas"
-              class="elements__image"
-            />
-            <div class="elements__places">
-              <p class="elements__place">Montanhas Carecas</p>
-              <button
-                class="elements__like"
-                aria-label="Botão like"
-                type="button"
-              ></button>
-            </div>
-          </div>
-          <div class="elements__card">
-            <img
-              src="imagens/card__image-latemar.png"
-              alt="Montanha Latemar"
-              class="elements__image"
-            />
-            <div class="elements__places">
-              <p class="elements__place">Latemar</p>
-              <button
-                class="elements__like"
-                aria-label="Botão like"
-                type="button"
-              ></button>
-            </div>
-          </div>
-          <div class="elements__card">
-            <img
-              src="imagens/card__image-vanoise.png"
-              alt="Montanha do Parque Nacional Vanoise"
-              class="elements__image"
-            />
-            <div class="elements__places">
-              <p class="elements__place">Parque Nacional da Vanoise</p>
-              <button
-                class="elements__like"
-                aria-label="Botão like"
-                type="button"
-              ></button>
-            </div>
-          </div>
-          <div class="elements__card">
-            <img
-              src="imagens/card__image-braies.png"
-              alt="Lago di Braies"
-              class="elements__image"
-            />
-            <div class="elements__places">
-              <p class="elements__place">Lago di Braies</p>
-              <button
-                class="elements__like"
-                aria-label="Botão like"
-                type="button"
-              ></button>
-            </div>
-          </div>
-        </section>
+        <section class="elements"></section>
       </main>
       <footer class="footer">
         <p class="footer__copyright">&copy; 2025 Around The U.S.</p>
@@ -159,6 +68,47 @@
         </form>
       </div>
     </div>
+    <div class="pop-up" id="add-pop-up">
+      <div class="pop-up__container">
+        <button class="pop-up__close" aria-label="Fechar"></button>
+        <h2 class="pop-up__title">Novo local</h2>
+        <form class="pop-up__form">
+          <input
+            type="text"
+            class="pop-up__input"
+            name="place"
+            placeholder="Título"
+            required
+          />
+          <input
+            type="url"
+            class="pop-up__input"
+            name="link"
+            placeholder="Link da imagem"
+            required
+          />
+          <button type="submit" class="pop-up__submit">Criar</button>
+        </form>
+      </div>
+    </div>
+    <template id="card-template">
+      <div class="elements__card">
+        <button
+          class="elements__delete-button"
+          type="button"
+          aria-label="Excluir cartão"
+        ></button>
+        <img src="" alt="" class="elements__image" />
+        <div class="elements__places">
+          <p class="elements__place"></p>
+          <button
+            class="elements__like"
+            aria-label="Botão Like"
+            type="button"
+          ></button>
+        </div>
+      </div>
+    </template>
     <script src="./scripts/index.js"></script>
   </body>
 </html>
