@@ -87,11 +87,6 @@ initialCards.forEach((element) => {
   const cardElement = createCard(element);
   const elementsSection = document.querySelector(".elements");
 
-  const likeButton = cardElement.querySelector(".elements__like");
-  likeButton.addEventListener("click", () => {
-    likeButton.classList.toggle("elements__like_active");
-  });
-
   elementsSection.appendChild(cardElement);
 });
 
