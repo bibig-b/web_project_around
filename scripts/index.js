@@ -1,24 +1,30 @@
 // Seleção dos elementos do pop-up
-let formElement = document.querySelector(".pop-up__form");
-let editButton = document.querySelector(".profile__edit");
-let closeButton = document.querySelector(".pop-up__close");
-let popup = document.querySelector("#edit-pop-up");
+const formElement = document.querySelector(".pop-up__form");
+const editButton = document.querySelector(".profile__edit");
+const closeButton = document.querySelector(".pop-up__close");
+const popup = document.querySelector("#edit-pop-up");
+
+// Seleção dos elementos do pop-up de adicionar card
+const addButton = document.querySelector(".profile__add");
+const addCloseButton = document.querySelector("#add-pop-up .pop-up__close");
+const addPopup = document.querySelector("#add-pop-up");
+const addFormElement = document.querySelector("#add-pop-up .pop-up__form");
+
+const placeInput = document.querySelector('.pop-up__input[name="place"]');
+const linkInput = document.querySelector('.pop-up__input[name="link"]');
 
 // Seleção dos elementos do perfil
-let profileName = document.querySelector(".profile__name");
-let profileRole = document.querySelector(".profile__role");
+const profileName = document.querySelector(".profile__name");
+const profileRole = document.querySelector(".profile__role");
 
-let nameInput = document.querySelector('.pop-up__input[name="name"]');
-let roleInput = document.querySelector('.pop-up__input[name="role"]');
+const nameInput = document.querySelector('.pop-up__input[name="name"]');
+const roleInput = document.querySelector('.pop-up__input[name="role"]');
 
-let addButton = document.querySelector("#add-pop-up");
-let addCloseButton = document.querySelector(".pop-up__close");
-let addPopup = document.querySelector("#profile__add");
-
-// Seleção dos elementos do formulário de adição de card
-let placeInput = document.querySelector('.pop-up__input[name="place"]');
-let linkInput = document.querySelector('.pop-up__input[name="link"]');
-let addFormElement = document.querySelector("#add-form");
+// Seleção dos elementos do pop-up de imagem
+const imagePopup = document.querySelector("#image-pop-up");
+const imagePopupImage = imagePopup.querySelector(".img__pop-up");
+const imagePopupCaption = imagePopup.querySelector(".img__pop-up__caption");
+const imagePopupCloseButton = imagePopup.querySelector(".pop-up__close");
 
 // Funções para abrir e fechar o pop-up
 function openPopup() {
@@ -76,32 +82,80 @@ const initialCards = [
     link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
   },
 ];
-
-// Criação dos cards
+// Seleção dos elementos do pop-up de adicionar card
 initialCards.forEach((element) => {
-  const cardTemplate = document.querySelector("#card-template");
-  const cardElement = cardTemplate.content.cloneNode(true);
-
-  const imageElement = cardElement.querySelector(".elements__image");
-  imageElement.src = element.link;
-  imageElement.alt = `Image de ${element.name}`;
-
-  const placeElement = cardElement.querySelector(".elements__place");
-  placeElement.textContent = element.name;
+  const cardElement = createCard(element);
+  const elementsSection = document.querySelector(".elements");
 
   const likeButton = cardElement.querySelector(".elements__like");
-
   likeButton.addEventListener("click", () => {
     likeButton.classList.toggle("elements__like_active");
   });
 
-  const elementsSection = document.querySelector(".elements");
   elementsSection.appendChild(cardElement);
 });
 
-document.addEventListener("click", (event) => {
-  if (event.target.classList.contains("elements__delete-button")) {
-    const cardToDelete = event.target.closest(".elements__card");
-    cardToDelete.remove();
-  }
-});
+function openAddPopup() {
+  placeInput.value = "";
+  linkInput.value = "";
+  addPopup.style.display = "flex";
+}
+function closeAddPopup() {
+  addPopup.style.display = "none";
+}
+
+function handleAddFormSubmit(evt) {
+  evt.preventDefault();
+
+  const placeValue = placeInput.value;
+  const linkValue = linkInput.value;
+
+  const newCard = {
+    name: placeValue,
+    link: linkValue,
+  };
+
+  initialCards.push(newCard);
+  const newCardElement = createCard(newCard);
+  const elementsSection = document.querySelector(".elements");
+  elementsSection.prepend(newCardElement);
+  closeAddPopup();
+}
+addButton.addEventListener("click", openAddPopup);
+addCloseButton.addEventListener("click", closeAddPopup);
+addFormElement.addEventListener("submit", handleAddFormSubmit);
+
+function createCard(cardData) {
+  const cardTemplate = document.querySelector("#card-template");
+  const cardElement = cardTemplate.content.cloneNode(true);
+
+  const imageElement = cardElement.querySelector(".elements__image");
+  imageElement.src = cardData.link;
+  imageElement.alt = `Imagem de ${cardData.name}`;
+  imageElement.addEventListener("click", () => {
+    openImagePopup(cardData.link, cardData.name);
+  });
+
+  const placeElement = cardElement.querySelector(".elements__place");
+  placeElement.textContent = cardData.name;
+
+  const deleteButton = cardElement.querySelector(".elements__delete-button");
+  deleteButton.addEventListener("click", () => {
+    deleteButton.closest(".elements__card").remove();
+  });
+  return cardElement;
+}
+
+// Função para abrir o pop-up de imagem
+function openImagePopup(imageSrc, imageAlt) {
+  imagePopupImage.src = imageSrc;
+  imagePopupImage.alt = imageAlt;
+  imagePopupCaption.textContent = imageAlt;
+  imagePopup.style.display = "flex";
+}
+
+// Função para fechar o pop-up de imagem
+function closeImagePopup() {
+  imagePopup.style.display = "none";
+}
+imagePopupCloseButton.addEventListener("click", closeImagePopup);

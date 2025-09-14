@@ -76,6 +76,26 @@
   opacity: 0.8;
 }
 
+.pop-up__container_image {
+  background-color: transparent;
+  max-width: 75vw;
+  max-height: 75vh;
+  padding: 0;
+}
+
+.img__pop-up {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+}
+
+.img__pop-up__caption {
+  color: #fff;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 10px 0 0 0;
+}
+
 @media (max-width: 544px) {
   .pop-up__container {
     width: 282px;
