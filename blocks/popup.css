@@ -96,6 +96,28 @@
   margin: 10px 0 0 0;
 }
 
+.pop-up__error {
+  color: #ff0000;
+  font-size: 12px;
+  line-height: 1.25;
+  margin-top: 5px;
+  display: block;
+  min-height: 12px;
+}
+
+.pop-up__input_type_error {
+  border-bottom: 1px solid #ff0000;
+}
+
+.pop-up__error_visible {
+  display: block;
+}
+.pop-up__submit_disabled {
+  background-color: #e5e5e5;
+  color: #c4c4c4;
+  cursor: not-allowed;
+}
+
 @media (max-width: 544px) {
   .pop-up__container {
     width: 282px;

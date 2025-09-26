@@ -159,3 +159,35 @@ function closeImagePopup() {
   imagePopup.style.display = "none";
 }
 imagePopupCloseButton.addEventListener("click", closeImagePopup);
+
+// Fechamento do pop-up ao clicar fora da imagem
+
+const editPopup = document.querySelector("#edit-pop-up");
+editPopup.addEventListener("click", function (evt) {
+  if (evt.target === evt.currentTarget) {
+    closePopup();
+  }
+});
+
+const addCardPopup = document.querySelector("#add-pop-up");
+addCardPopup.addEventListener("click", function (evt) {
+  if (evt.target === evt.currentTarget) {
+    closeAddPopup();
+  }
+});
+
+const imgCardPopup = document.querySelector("#image-pop-up");
+imgCardPopup.addEventListener("click", function (evt) {
+  if (evt.target === evt.currentTarget) {
+    closeImagePopup();
+  }
+});
+document.addEventListener("keydown", function (evt) {
+  if (evt.key === "Escape") {
+    closePopup();
+    closeAddPopup();
+    closeImagePopup();
+  }
+});
+
+// Validação de formulários
