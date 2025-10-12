@@ -161,24 +161,3 @@ addCloseButton.addEventListener("click", closeAddPopup);
 addFormElement.addEventListener("submit", handleAddFormSubmit);
 
 imagePopupCloseButton.addEventListener("click", closeImagePopup);
-
-/*const addCardPopup = document.querySelector("#add-pop-up");
-addCardPopup.addEventListener("click", function (evt) {
-  if (evt.target === evt.currentTarget) {
-    closeAddPopup();
-  }
-});
-
-const imgCardPopup = document.querySelector("#image-pop-up");
-imgCardPopup.addEventListener("click", function (evt) {
-  if (evt.target === evt.currentTarget) {
-    closeImagePopup();
-  }
-});
-document.addEventListener("keydown", function (evt) {
-  if (evt.key === "Escape") {
-    closePopup();
-    closeAddPopup();
-    closeImagePopup();
-  }
-});*/
