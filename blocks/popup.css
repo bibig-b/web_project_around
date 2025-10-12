@@ -75,6 +75,10 @@
   opacity: 0.8;
 }
 
+.pop-up__opened {
+  display: flex;
+}
+
 .pop-up__container_image {
   background-color: transparent;
   max-width: 75vw;

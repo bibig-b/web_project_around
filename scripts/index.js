@@ -1,8 +1,47 @@
-// Seleção dos elementos do pop-up
-const formElement = document.querySelector(".pop-up__form");
-const editButton = document.querySelector(".profile__edit");
-const closeButton = document.querySelector(".pop-up__close");
-const popup = document.querySelector("#edit-pop-up");
+import Card from "./Card.js";
+import FormValidator from "./FormValidator.js";
+import {
+  openPopup,
+  closePopup,
+  closeByOverlay,
+  closeByEscape,
+  openImagePopup,
+  closeImagePopup,
+} from "./utils.js";
+
+const validationConfig = {
+  inputSelector: ".pop-upinput",
+  submitButtonSelector: ".pop-upsubmit",
+  inactiveButtonClass: "pop-upsubmit_inactive",
+  inputErrorClass: "pop-upinput_type_error",
+  errorClass: "pop-up__input-error_active",
+};
+
+const editFormValidator = new FormValidator(
+  validationConfig,
+  document.querySelector("#edit-pop-up .pop-up__form")
+);
+editFormValidator.enableValidation();
+
+const addFormValidator = new FormValidator(
+  validationConfig,
+  document.querySelector("#add-pop-up .pop-up__form")
+);
+addFormValidator.enableValidation();
+
+// Seleção dos elementos do pop-up de edição de perfil
+const editButton = document.querySelector(".profile__edit ");
+const closeButton = document.querySelector("#edit-pop-up .pop-up__close");
+const formElement = document.querySelector("#edit-pop-up .pop-up__form");
+
+function openAddPopup() {
+  openPopup(addPopup);
+  addFormValidator.resetValidation(); // Reseta a validação ao abrir o pop-up
+}
+
+function closeAddPopup() {
+  closePopup(addPopup);
+}
 
 // Seleção dos elementos do pop-up de adicionar card
 const addButton = document.querySelector(".profile__add");
@@ -26,17 +65,14 @@ const imagePopupImage = imagePopup.querySelector(".img__pop-up");
 const imagePopupCaption = imagePopup.querySelector(".img__pop-up__caption");
 const imagePopupCloseButton = imagePopup.querySelector(".pop-up__close");
 
-// Funções para abrir e fechar o pop-up
-function openPopup() {
-  nameInput.value = profileName.textContent;
-  roleInput.value = profileRole.textContent;
+const editPopup = document.querySelector("#edit-pop-up");
+const addCardPopup = document.querySelector("#add-pop-up");
+const imgCardPopup = document.querySelector("#image-pop-up");
 
-  popup.style.display = "flex";
-}
-
-function closePopup() {
-  popup.style.display = "none";
-}
+editPopup.addEventListener("click", closeByOverlay);
+addCardPopup.addEventListener("click", closeByOverlay);
+imgCardPopup.addEventListener("click", closeByOverlay);
+document.addEventListener("keydown", closeByEscape);
 
 // Função para atualizar o perfil ao enviar o formulário
 function handleProfileFormSubmit(evt) {
@@ -50,8 +86,14 @@ function handleProfileFormSubmit(evt) {
 
   closePopup();
 }
+function openEditPopup() {
+  nameInput.value = profileName.textContent;
+  roleInput.value = profileRole.textContent;
+  editFormValidator.resetValidation(); // Reseta a validação ao abrir o pop-up
+  openPopup(editPopup);
+}
 
-editButton.addEventListener("click", openPopup);
+editButton.addEventListener("click", openEditPopup);
 closeButton.addEventListener("click", closePopup);
 formElement.addEventListener("submit", handleProfileFormSubmit);
 
@@ -82,6 +124,13 @@ const initialCards = [
     link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
   },
 ];
+function createCard(cardData) {
+  console.log("Criando card:", cardData);
+  const CardInstante = new Card(cardData, openImagePopup);
+  const cardElement = CardInstante.generateCard();
+  console.log("Card criado:", cardElement);
+  return cardElement;
+}
 // Seleção dos elementos do pop-up de adicionar card
 initialCards.forEach((element) => {
   const cardElement = createCard(element);
@@ -89,15 +138,6 @@ initialCards.forEach((element) => {
 
   elementsSection.appendChild(cardElement);
 });
-
-function openAddPopup() {
-  placeInput.value = "";
-  linkInput.value = "";
-  addPopup.style.display = "flex";
-}
-function closeAddPopup() {
-  addPopup.style.display = "none";
-}
 
 function handleAddFormSubmit(evt) {
   evt.preventDefault();
@@ -120,56 +160,9 @@ addButton.addEventListener("click", openAddPopup);
 addCloseButton.addEventListener("click", closeAddPopup);
 addFormElement.addEventListener("submit", handleAddFormSubmit);
 
-function createCard(cardData) {
-  const cardTemplate = document.querySelector("#card-template");
-  const cardElement = cardTemplate.content.cloneNode(true);
-
-  const imageElement = cardElement.querySelector(".elements__image");
-  imageElement.src = cardData.link;
-  imageElement.alt = `Imagem de ${cardData.name}`;
-  imageElement.addEventListener("click", () => {
-    openImagePopup(cardData.link, cardData.name);
-  });
-
-  const placeElement = cardElement.querySelector(".elements__place");
-  placeElement.textContent = cardData.name;
-
-  const likeButton = cardElement.querySelector(".elements__like");
-  likeButton.addEventListener("click", () => {
-    likeButton.classList.toggle("elements__like_active");
-  });
-
-  const deleteButton = cardElement.querySelector(".elements__delete-button");
-  deleteButton.addEventListener("click", () => {
-    deleteButton.closest(".elements__card").remove();
-  });
-  return cardElement;
-}
-
-// Função para abrir o pop-up de imagem
-function openImagePopup(imageSrc, imageAlt) {
-  imagePopupImage.src = imageSrc;
-  imagePopupImage.alt = imageAlt;
-  imagePopupCaption.textContent = imageAlt;
-  imagePopup.style.display = "flex";
-}
-
-// Função para fechar o pop-up de imagem
-function closeImagePopup() {
-  imagePopup.style.display = "none";
-}
 imagePopupCloseButton.addEventListener("click", closeImagePopup);
 
-// Fechamento do pop-up ao clicar fora da imagem
-
-const editPopup = document.querySelector("#edit-pop-up");
-editPopup.addEventListener("click", function (evt) {
-  if (evt.target === evt.currentTarget) {
-    closePopup();
-  }
-});
-
-const addCardPopup = document.querySelector("#add-pop-up");
+/*const addCardPopup = document.querySelector("#add-pop-up");
 addCardPopup.addEventListener("click", function (evt) {
   if (evt.target === evt.currentTarget) {
     closeAddPopup();
@@ -188,6 +181,4 @@ document.addEventListener("keydown", function (evt) {
     closeAddPopup();
     closeImagePopup();
   }
-});
-
-// Validação de formulários
+});*/

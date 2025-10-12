@@ -66,16 +66,24 @@ class FormValidator {
       });
     });
   }
+  resetValidation() {
+    const inputList = Array.from(
+      this._formElement.querySelectorAll(".pop-up__input")
+    );
+    const buttonElement = this._formElement.querySelector(".pop-up__submit");
+
+    inputList.forEach((inputElement) => {
+      this.#hideInputError(inputElement);
+    });
+
+    this.#toggleButtonState(inputList, buttonElement);
+  }
 
   enableValidation() {
-    // Função para habilitar a validação
-    const formList = Array.from(document.querySelectorAll(".pop-up__form"));
-    formList.forEach((formElement) => {
-      formElement.addEventListener("submit", function (evt) {
-        evt.preventDefault();
-      });
-      this.#setEventListeners(formElement);
+    this._formElement.addEventListener("submit", (evt) => {
+      evt.preventDefault();
     });
+    this.#setEventListeners();
   }
 }
 
