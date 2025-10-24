@@ -1,5 +1,5 @@
-import Card from "./Card.js";
-import FormValidator from "./FormValidator.js";
+import Card from "../components/Card.js";
+import FormValidator from "../components/FormValidator.js";
 import {
   openPopup,
   closePopup,
@@ -7,7 +7,24 @@ import {
   closeByEscape,
   openImagePopup,
   closeImagePopup,
-} from "./utils.js";
+  openAddPopup,
+  closeAddPopup,
+} from "../components/utils.js";
+import Popup from "../components/Popup.js";
+import PopupWithImage from "../components/PopupWithImage.js";
+import Section from "../components/Section.js";
+import UserInfo from "../components/UserInfo.js";
+
+const userInfo = new UserInfo({
+  nameSelector: ".profile__name",
+  jobSelector: ".profile__role",
+});
+
+const popup = new Popup("#edit-pop-up");
+popup.setEventListeners();
+
+const imagePopup = new PopupWithImage("#image-pop-up");
+imagePopup.setEventListeners();
 
 const validationConfig = {
   inputSelector: ".pop-upinput",
@@ -34,67 +51,43 @@ const editButton = document.querySelector(".profile__edit ");
 const closeButton = document.querySelector("#edit-pop-up .pop-up__close");
 const formElement = document.querySelector("#edit-pop-up .pop-up__form");
 
-function openAddPopup() {
-  openPopup(addPopup);
-  addFormValidator.resetValidation(); // Reseta a validação ao abrir o pop-up
-}
-
-function closeAddPopup() {
-  closePopup(addPopup);
-}
-
 // Seleção dos elementos do pop-up de adicionar card
 const addButton = document.querySelector(".profile__add");
 const addCloseButton = document.querySelector("#add-pop-up .pop-up__close");
-const addPopup = document.querySelector("#add-pop-up");
 const addFormElement = document.querySelector("#add-pop-up .pop-up__form");
 
 const placeInput = document.querySelector('.pop-up__input[name="place"]');
 const linkInput = document.querySelector('.pop-up__input[name="link"]');
 
-// Seleção dos elementos do perfil
-const profileName = document.querySelector(".profile__name");
-const profileRole = document.querySelector(".profile__role");
-
 const nameInput = document.querySelector('.pop-up__input[name="name"]');
 const roleInput = document.querySelector('.pop-up__input[name="role"]');
 
 // Seleção dos elementos do pop-up de imagem
-const imagePopup = document.querySelector("#image-pop-up");
-const imagePopupImage = imagePopup.querySelector(".img__pop-up");
-const imagePopupCaption = imagePopup.querySelector(".img__pop-up__caption");
-const imagePopupCloseButton = imagePopup.querySelector(".pop-up__close");
 
-const editPopup = document.querySelector("#edit-pop-up");
-const addCardPopup = document.querySelector("#add-pop-up");
-const imgCardPopup = document.querySelector("#image-pop-up");
-
-editPopup.addEventListener("click", closeByOverlay);
-addCardPopup.addEventListener("click", closeByOverlay);
-imgCardPopup.addEventListener("click", closeByOverlay);
-document.addEventListener("keydown", closeByEscape);
+const addPopup = new Popup("#add-pop-up");
+addPopup.setEventListeners();
 
 // Função para atualizar o perfil ao enviar o formulário
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
-  let nameValue = nameInput.value;
-  let roleValue = roleInput.value;
+  userInfo.setUserInfo({
+    name: nameInput.value,
+    job: roleInput.value,
+  });
 
-  profileName.textContent = nameValue;
-  profileRole.textContent = roleValue;
-
-  closePopup();
+  popup.close();
 }
 function openEditPopup() {
-  nameInput.value = profileName.textContent;
-  roleInput.value = profileRole.textContent;
+  const userData = userInfo.getUserInfo();
+  nameInput.value = userData.name;
+  roleInput.value = userData.job;
   editFormValidator.resetValidation(); // Reseta a validação ao abrir o pop-up
-  openPopup(editPopup);
+  popup.open();
 }
 
 editButton.addEventListener("click", openEditPopup);
-closeButton.addEventListener("click", closePopup);
+closeButton.addEventListener("click", () => popup.close());
 formElement.addEventListener("submit", handleProfileFormSubmit);
 
 // Array inicial de cards
@@ -124,40 +117,42 @@ const initialCards = [
     link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
   },
 ];
+
+const SectionInstance = new Section(
+  {
+    items: initialCards,
+    renderer: (cardData) => {
+      const cardElement = createCard(cardData);
+      SectionInstance.addItem(cardElement);
+    },
+  },
+  ".elements"
+);
+
+SectionInstance.renderItems();
+
 function createCard(cardData) {
-  console.log("Criando card:", cardData);
-  const CardInstante = new Card(cardData, openImagePopup);
+  const CardInstante = new Card(cardData, (data) => imagePopup.open(data));
   const cardElement = CardInstante.generateCard();
-  console.log("Card criado:", cardElement);
   return cardElement;
 }
 // Seleção dos elementos do pop-up de adicionar card
-initialCards.forEach((element) => {
-  const cardElement = createCard(element);
-  const elementsSection = document.querySelector(".elements");
-
-  elementsSection.appendChild(cardElement);
-});
 
 function handleAddFormSubmit(evt) {
   evt.preventDefault();
 
-  const placeValue = placeInput.value;
-  const linkValue = linkInput.value;
-
   const newCard = {
-    name: placeValue,
-    link: linkValue,
+    name: placeInput.value,
+    link: linkInput.value,
   };
 
-  initialCards.push(newCard);
   const newCardElement = createCard(newCard);
-  const elementsSection = document.querySelector(".elements");
-  elementsSection.prepend(newCardElement);
-  closeAddPopup();
+  SectionInstance.addItem(newCardElement);
+
+  addPopup.close();
 }
 addButton.addEventListener("click", openAddPopup);
-addCloseButton.addEventListener("click", closeAddPopup);
-addFormElement.addEventListener("submit", handleAddFormSubmit);
 
-imagePopupCloseButton.addEventListener("click", closeImagePopup);
+addCloseButton.addEventListener("click", closeAddPopup);
+
+addFormElement.addEventListener("submit", handleAddFormSubmit);

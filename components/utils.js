@@ -42,6 +42,16 @@ function closeByOverlay(evt) {
   }
 }
 
+function openAddPopup() {
+  const addPopup = document.getElementById("add-pop-up");
+  openPopup(addPopup);
+}
+
+function closeAddPopup() {
+  const addPopup = document.getElementById("add-pop-up");
+  closePopup(addPopup);
+}
+
 export {
   openPopup,
   closePopup,
@@ -49,4 +59,6 @@ export {
   openImagePopup,
   closeImagePopup,
   closeByOverlay,
+  openAddPopup,
+  closeAddPopup,
 };

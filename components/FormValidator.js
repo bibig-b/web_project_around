@@ -1,11 +1,13 @@
 // Função para mostrar mensagem de erros
 class FormValidator {
+  #settings;
+  #formElement;
   constructor(settings, formElement) {
-    this._settings = settings;
-    this._formElement = formElement;
+    this.#settings = settings;
+    this.#formElement = formElement;
   }
   #showInputError(inputElement, errorMessage) {
-    const errorElement = this._formElement.querySelector(
+    const errorElement = this.#formElement.querySelector(
       `#${inputElement.id}-error`
     );
     inputElement.classList.add("pop-up__input_type_error");
@@ -15,7 +17,7 @@ class FormValidator {
 
   #hideInputError(inputElement) {
     // Função para esconder mensagens de erros
-    const errorElement = this._formElement.querySelector(
+    const errorElement = this.#formElement.querySelector(
       `#${inputElement.id}-error`
     );
     inputElement.classList.remove("pop-up__input_type_error");
@@ -55,9 +57,9 @@ class FormValidator {
   #setEventListeners() {
     // Função para adicionar os event listeners aos inputs do formulário
     const inputList = Array.from(
-      this._formElement.querySelectorAll(".pop-up__input")
+      this.#formElement.querySelectorAll(".pop-up__input")
     );
-    const buttonElement = this._formElement.querySelector(".pop-up__submit");
+    const buttonElement = this.#formElement.querySelector(".pop-up__submit");
 
     inputList.forEach((inputElement) => {
       inputElement.addEventListener("input", () => {
@@ -68,9 +70,9 @@ class FormValidator {
   }
   resetValidation() {
     const inputList = Array.from(
-      this._formElement.querySelectorAll(".pop-up__input")
+      this.#formElement.querySelectorAll(".pop-up__input")
     );
-    const buttonElement = this._formElement.querySelector(".pop-up__submit");
+    const buttonElement = this.#formElement.querySelector(".pop-up__submit");
 
     inputList.forEach((inputElement) => {
       this.#hideInputError(inputElement);
@@ -80,7 +82,7 @@ class FormValidator {
   }
 
   enableValidation() {
-    this._formElement.addEventListener("submit", (evt) => {
+    this.#formElement.addEventListener("submit", (evt) => {
       evt.preventDefault();
     });
     this.#setEventListeners();
