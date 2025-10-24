@@ -42,13 +42,6 @@ class Card {
     return this._element;
   }
 
-  handleImageClick() {
-    this._handleCardClick({
-      name: this._name,
-      link: this._link,
-    });
-  }
-
   _handleDeleteCard() {
     this._element.remove();
     this._element = null;
@@ -60,7 +53,10 @@ class Card {
       .classList.toggle("elements__like_active");
   }
   _handleImageClick() {
-    this._handleCardClick(this._link, this._name);
+    this._handleCardClick({
+      name: this._name,
+      link: this._link,
+    });
   }
 }
 

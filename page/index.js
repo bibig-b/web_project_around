@@ -122,8 +122,7 @@ const SectionInstance = new Section(
   {
     items: initialCards,
     renderer: (cardData) => {
-      const cardElement = createCard(cardData);
-      SectionInstance.addItem(cardElement);
+      return createCard(cardData);
     },
   },
   ".elements"
