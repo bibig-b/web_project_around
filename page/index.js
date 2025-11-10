@@ -14,6 +14,15 @@ import Popup from "../components/Popup.js";
 import PopupWithImage from "../components/PopupWithImage.js";
 import Section from "../components/Section.js";
 import UserInfo from "../components/UserInfo.js";
+import Api from "../components/Api.js";
+
+const api = new Api({
+  baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
+  headers: {
+    authorization: "312a1cc2-b167-4125-82ae-d85df359252d",
+    "Content-Type": "application/json",
+  },
+});
 
 const userInfo = new UserInfo({
   nameSelector: ".profile__name",
@@ -90,7 +99,21 @@ editButton.addEventListener("click", openEditPopup);
 closeButton.addEventListener("click", () => popup.close());
 formElement.addEventListener("submit", handleProfileFormSubmit);
 
-// Array inicial de cards
+api
+  .initialData()
+  .then(([userData, cardsData]) => {
+    userInfo.setUserInfo({
+      name: userData.name,
+      job: userData.about,
+    });
+    userInfo.setUserAvatar(userData.avatar);
+    SectionInstance.renderItems(cardsData);
+  })
+  .catch((err) => {
+    console.log(`Erro ao buscar dados iniciais: ${err}`);
+  });
+
+/*Array inicial de cards
 const initialCards = [
   {
     name: "Vale de Yosemite",
@@ -116,11 +139,11 @@ const initialCards = [
     name: "Lago di Braies",
     link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
   },
-];
+];*/
 
 const SectionInstance = new Section(
   {
-    items: initialCards,
+    items: api.initialData,
     renderer: (cardData) => {
       return createCard(cardData);
     },
