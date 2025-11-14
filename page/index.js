@@ -15,7 +15,8 @@ import UserInfo from "../components/UserInfo.js";
 import Api from "../components/Api.js";
 import PopupWithConfirmation from "../components/PopupWithConfirmation.js";
 
-import "./page/index.css";
+const confirmDeletePopup = new PopupWithConfirmation("#confirm-delete-popup");
+confirmDeletePopup.setEventListeners();
 
 const api = new Api({
   baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
@@ -222,3 +223,18 @@ addButton.addEventListener("click", openAddPopup);
 addCloseButton.addEventListener("click", () => addPopup.close());
 
 addFormElement.addEventListener("submit", handleAddFormSubmit);
+
+function handleDeleteClick(cardId, cardElement) {
+  confirmDeletePopup.setAction(() => {
+    api
+      .deleteCard(cardId)
+      .then(() => {
+        cardElement.remove();
+      })
+      .catch((err) => {
+        console.error("Erro ao deletar cartão:", err);
+      });
+  });
+
+  confirmDeletePopup.open();
+}
