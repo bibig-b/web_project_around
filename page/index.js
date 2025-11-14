@@ -13,6 +13,9 @@ import PopupWithImage from "../components/PopupWithImage.js";
 import Section from "../components/Section.js";
 import UserInfo from "../components/UserInfo.js";
 import Api from "../components/Api.js";
+import PopupWithConfirmation from "../components/PopupWithConfirmation.js";
+
+import "./page/index.css";
 
 const api = new Api({
   baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
@@ -70,6 +73,15 @@ const linkInput = document.querySelector('.pop-up__input[name="link"]');
 const nameInput = document.querySelector('.pop-up__input[name="name"]');
 const roleInput = document.querySelector('.pop-up__input[name="role"]');
 const avatarInput = document.querySelector('.pop-up__input[name="avatar"]');
+const avatarEditButton = document.querySelector(".profile__avatar-edit");
+
+const confirmationPopup = new PopupWithConfirmation("#confirm-pop-up");
+confirmationPopup.setEventListeners();
+
+// Seleção dos elementos do pop-up de edição de avatar
+const avatarPopup = new Popup("#avatar-pop-up");
+avatarPopup.setEventListeners();
+
 // Seleção dos elementos do pop-up de imagem
 
 const addPopup = new Popup("#add-pop-up");
@@ -119,6 +131,8 @@ function openEditPopup() {
 editButton.addEventListener("click", openEditPopup);
 closeButton.addEventListener("click", () => popup.close());
 formElement.addEventListener("submit", handleProfileFormSubmit);
+
+// Função para criar um novo card
 
 function createCard(cardData) {
   const card = new Card(

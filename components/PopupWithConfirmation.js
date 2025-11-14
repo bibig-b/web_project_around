@@ -3,7 +3,7 @@ export default class PopupWithConfirmation extends Popup {
   constructor(popupSelector) {
     super(popupSelector);
     this._confirmButton = this._popupElement.querySelector(
-      ".pop-up__confirm-button"
+      ".pop-up__submit_confirm"
     );
   }
   setAction(action) {
