@@ -121,6 +121,9 @@
   cursor: not-allowed;
 }
 
+.pop-up__submit_disabled:hover {
+  opacity: 1;
+}
 @media (max-width: 544px) {
   .pop-up__container {
     width: 282px;

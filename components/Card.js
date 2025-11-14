@@ -1,9 +1,10 @@
 class Card {
-  constructor(data, handleCardClick, cardSelector) {
+  constructor(data, cardSelector, handleCardClick, handleDeleteCard) {
     this._name = data.name;
     this._link = data.link;
+    this._id = data._id;
     this._handleCardClick = handleCardClick;
-    this._cardSelector = cardSelector;
+    this._handleDeleteCard = handleDeleteCard; // ← Este é o callback da API
   }
 
   _getTemplate() {
@@ -20,7 +21,7 @@ class Card {
       .addEventListener("click", () => this._handleLikeCard());
     this._element
       .querySelector(".elements__delete-button")
-      .addEventListener("click", () => this._handleDeleteCard());
+      .addEventListener("click", () => this._handleDeleteClick()); // ← MUDANÇA AQUI
     this._element
       .querySelector(".elements__image")
       .addEventListener("click", () => this._handleImageClick());
@@ -42,16 +43,25 @@ class Card {
     return this._element;
   }
 
-  _handleDeleteCard() {
-    this._element.remove();
-    this._element = null;
+  // ← NOVO MÉTODO: lida com o clique do botão delete
+  _handleDeleteClick() {
+    this._handleDeleteCard(this._id) // ← Chama o callback da API
+      .then(() => {
+        this._element.remove();
+        this._element = null;
+      })
+      .catch((err) => {
+        console.log(`Erro ao deletar cartão: ${err}`);
+      });
   }
+
   _handleLikeCard() {
     this._element.querySelector(".elements__like");
     this._element
       .querySelector(".elements__like")
       .classList.toggle("elements__like_active");
   }
+
   _handleImageClick() {
     this._handleCardClick({
       name: this._name,

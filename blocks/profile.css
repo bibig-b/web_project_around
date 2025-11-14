@@ -76,6 +76,30 @@
   opacity: 0.6;
 }
 
+.profile__avatar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+}
+.profile__avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.profile__avatar:hover .profile__avatar-overlay {
+  opacity: 1;
+}
+
 @media (max-width: 544px) {
   .content__profile {
     max-width: 282px;

@@ -114,6 +114,38 @@
         <p class="img__pop-up__caption"></p>
       </div>
     </div>
+    <div class="pop-up pop-up_confirm" id="confirm-pop-up">
+      <div class="pop-up__container">
+        <button class="pop-up__close" aria-label="Fechar"></button>
+        <h2 class="pop-up__title pop-up__title_confirm">
+          Tem certeza?
+        </h2>
+        <form class="pop-up__form pop-up__form_confirm">
+          <button type="submit" class="pop-up__submit_confirm">
+            Sim
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="pop-up pop-up_avatar" id="avatar-pop-up">
+      <div class="pop-up__container">
+        <button class="pop-up__close" aria-label="Fechar"></button>
+        <h2 class="pop-up__title">Alterar foto do perfil</h2>
+        <form class="pop-up__form">
+          <input
+            type="url"
+            class="pop-up__input"
+            name="avatar"
+            id="avatar-input"
+            placeholder="Link da imagem"
+            required
+            minlength="1"
+            maxlength="200"
+          />
+          <span class="pop-up__error" id="avatar-input-error"></span>
+          <button type="submit" class="pop-up__submit">Salvar</button>
+        </form>
+      </div>
     <template id="card-template">
       <div class="elements__card">
         <button

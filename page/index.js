@@ -7,9 +7,7 @@ import {
   closeByEscape,
   openImagePopup,
   closeImagePopup,
-  openAddPopup,
-  closeAddPopup,
-} from "../components/utils.js";
+} from "../components/Utils.js";
 import Popup from "../components/Popup.js";
 import PopupWithImage from "../components/PopupWithImage.js";
 import Section from "../components/Section.js";
@@ -36,11 +34,11 @@ const imagePopup = new PopupWithImage("#image-pop-up");
 imagePopup.setEventListeners();
 
 const validationConfig = {
-  inputSelector: ".pop-upinput",
-  submitButtonSelector: ".pop-upsubmit",
-  inactiveButtonClass: "pop-upsubmit_inactive",
-  inputErrorClass: "pop-upinput_type_error",
-  errorClass: "pop-up__input-error_active",
+  inputSelector: ".pop-up__input",
+  submitButtonSelector: ".pop-up__submit",
+  inactiveButtonClass: "pop-up__submit_disabled",
+  inputErrorClass: "pop-up__input_type_error",
+  errorClass: "pop-up__error_visible",
 };
 
 const editFormValidator = new FormValidator(
@@ -62,6 +60,7 @@ const formElement = document.querySelector("#edit-pop-up .pop-up__form");
 
 // Seleção dos elementos do pop-up de adicionar card
 const addButton = document.querySelector(".profile__add");
+console.log("addButton:", addButton);
 const addCloseButton = document.querySelector("#add-pop-up .pop-up__close");
 const addFormElement = document.querySelector("#add-pop-up .pop-up__form");
 
@@ -70,22 +69,44 @@ const linkInput = document.querySelector('.pop-up__input[name="link"]');
 
 const nameInput = document.querySelector('.pop-up__input[name="name"]');
 const roleInput = document.querySelector('.pop-up__input[name="role"]');
-
+const avatarInput = document.querySelector('.pop-up__input[name="avatar"]');
 // Seleção dos elementos do pop-up de imagem
 
 const addPopup = new Popup("#add-pop-up");
 addPopup.setEventListeners();
 
+const SectionInstance = new Section(
+  {
+    items: [],
+    renderer: (cardData) => {
+      return createCard(cardData);
+    },
+  },
+  ".elements"
+);
+
+console.log(
+  "Elemento .elements encontrado:",
+  document.querySelector(".elements")
+); // ← Adicione
+
 // Função para atualizar o perfil ao enviar o formulário
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
-  userInfo.setUserInfo({
-    name: nameInput.value,
-    job: roleInput.value,
-  });
-
-  popup.close();
+  api
+    .editUserInfo(nameInput.value, roleInput.value)
+    .then((userData) => {
+      console.log("Dados do usuário atualizados:", userData);
+      userInfo.setUserInfo({
+        name: userData.name,
+        job: userData.about,
+      });
+      popup.close();
+    })
+    .catch((err) => {
+      console.log(`Erro ao atualizar informações do usuário: ${err}`);
+    });
 }
 function openEditPopup() {
   const userData = userInfo.getUserInfo();
@@ -99,82 +120,91 @@ editButton.addEventListener("click", openEditPopup);
 closeButton.addEventListener("click", () => popup.close());
 formElement.addEventListener("submit", handleProfileFormSubmit);
 
-api
-  .initialData()
-  .then(([userData, cardsData]) => {
+function createCard(cardData) {
+  const card = new Card(
+    cardData,
+    "#card-template",
+    (data) => imagePopup.open(data),
+    (cardId) => {
+      return api.deleteCard(cardId);
+    }
+  );
+  const cardElement = card.generateCard();
+  return cardElement;
+}
+
+Promise.all([api.getUserInfo(), api.getInitialCards()])
+  .then(([userData, initialCards]) => {
+    console.log("Cards iniciais:", initialCards);
+    console.log("Dados do usuário:", userData);
+
     userInfo.setUserInfo({
       name: userData.name,
       job: userData.about,
     });
-    userInfo.setUserAvatar(userData.avatar);
-    SectionInstance.renderItems(cardsData);
+    const avatarImage = document.querySelector(".content__avatar");
+    avatarImage.src = userData.avatar;
+
+    console.log("Chamando renderItems com", initialCards.length, "cards"); // ← Adicione
+    SectionInstance.renderItems(initialCards);
+    console.log("renderItems foi executado"); // ← Adicione
   })
+
   .catch((err) => {
     console.log(`Erro ao buscar dados iniciais: ${err}`);
   });
 
-/*Array inicial de cards
-const initialCards = [
-  {
-    name: "Vale de Yosemite",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_yosemite.jpg",
-  },
-  {
-    name: "Lago Louise",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lake-louise.jpg",
-  },
-  {
-    name: "Montanhas Carecas",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_bald-mountains.jpg",
-  },
-  {
-    name: "Latemar",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_latemar.jpg",
-  },
-  {
-    name: "Parque Nacional da Vanoise ",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_vanoise.jpg",
-  },
-  {
-    name: "Lago di Braies",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
-  },
-];*/
-
-const SectionInstance = new Section(
-  {
-    items: api.initialData,
-    renderer: (cardData) => {
-      return createCard(cardData);
-    },
-  },
-  ".elements"
-);
-
-SectionInstance.renderItems();
-
-function createCard(cardData) {
-  const CardInstante = new Card(cardData, (data) => imagePopup.open(data));
-  const cardElement = CardInstante.generateCard();
-  return cardElement;
+function openAddPopup() {
+  placeInput.value = "";
+  linkInput.value = "";
+  addFormValidator.resetValidation(); // Reseta a validação ao abrir o pop-up
+  addPopup.open();
 }
+
 // Seleção dos elementos do pop-up de adicionar card
 
 function handleAddFormSubmit(evt) {
   evt.preventDefault();
 
+  const submitButton = evt.target.querySelector(".pop-up__submit");
+  function renderLoading(
+    isLoading,
+    button,
+    originalText = "Criar",
+    loadingText = "Salvando..."
+  ) {
+    if (isLoading) {
+      button.textContent = loadingText;
+    } else {
+      button.textContent = originalText;
+    }
+  }
+  renderLoading(true, submitButton);
+
   const newCard = {
     name: placeInput.value,
     link: linkInput.value,
   };
+  console.log("Dados que serão enviados:", newCard);
 
-  const newCardElement = createCard(newCard);
-  SectionInstance.addItem(newCardElement);
+  api
 
-  addPopup.close();
+    .addNewCard(newCard.name, newCard.link)
+    .then((cardData) => {
+      console.log("Resposta do servidor:", cardData);
+      const cardElement = createCard(cardData);
+      SectionInstance.addItem(cardElement);
+      renderLoading(false, submitButton);
+      addPopup.close();
+    })
+    .catch((err) => {
+      console.log(`Erro ao adicionar novo card: ${err}`);
+      renderLoading(false, submitButton);
+    });
 }
+
 addButton.addEventListener("click", openAddPopup);
 
-addCloseButton.addEventListener("click", closeAddPopup);
+addCloseButton.addEventListener("click", () => addPopup.close());
 
 addFormElement.addEventListener("submit", handleAddFormSubmit);

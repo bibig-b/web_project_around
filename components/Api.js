@@ -1,7 +1,8 @@
 export default class Api {
   constructor(options) {
-    this.baseUrl = options.baseUrl;
-    this.headers = options.headers;
+    this._baseUrl = options.baseUrl;
+    this._headers = options.headers;
+    this._handleResponse = this._handleResponse.bind(this);
   }
 
   _handleResponse(res) {
@@ -11,24 +12,24 @@ export default class Api {
     return Promise.reject(`Error: ${res.status}`);
   }
 
-  getInitialCards() {
-    return fetch(`${this.baseUrl}/cards`, {
+  getUserInfo() {
+    return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
-      headers: this.headers,
+      headers: this._headers,
     }).then(this._handleResponse);
   }
 
-  getUserInfo() {
-    return fetch(`${this.baseUrl}/users/me`, {
+  getInitialCards() {
+    return fetch(`${this._baseUrl}/cards`, {
       method: "GET",
-      headers: this.headers,
+      headers: this._headers,
     }).then(this._handleResponse);
   }
 
   editUserInfo(name, about) {
-    return fetch(`${this.baseUrl}/users/me`, {
+    return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
-      headers: this.headers,
+      headers: this._headers,
       body: JSON.stringify({
         name: name,
         about: about,
@@ -37,9 +38,9 @@ export default class Api {
   }
 
   addNewCard(name, link) {
-    return fetch(`${this.baseUrl}/cards`, {
+    return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
-      headers: this.headers,
+      headers: this._headers,
       body: JSON.stringify({
         name: name,
         link: link,
@@ -48,23 +49,28 @@ export default class Api {
   }
 
   deleteCard(cardId) {
-    return fetch(`${this.baseUrl}/cards/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
-      headers: this.headers,
-    }).then(this._handleResponse);
+      headers: this._headers,
+    }).then((res) => {
+      if (res.ok) {
+        return {};
+      }
+      return Promise.reject(`Error: ${res.status}`);
+    });
   }
 
   changeLikeCardStatus(cardId, isLiked) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
       method: isLiked ? "PUT" : "DELETE",
-      headers: this.headers,
+      headers: this._headers,
     }).then(this._handleResponse);
   }
 
   editUserAvatar(avatar) {
-    return fetch(`${this.baseUrl}/users/me/avatar`, {
+    return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
-      headers: this.headers,
+      headers: this._headers,
       body: JSON.stringify({
         avatar: avatar,
       }),
