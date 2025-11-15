@@ -15,9 +15,6 @@ import UserInfo from "../components/UserInfo.js";
 import Api from "../components/Api.js";
 import PopupWithConfirmation from "../components/PopupWithConfirmation.js";
 
-const confirmDeletePopup = new PopupWithConfirmation("#confirm-delete-popup");
-confirmDeletePopup.setEventListeners();
-
 const api = new Api({
   baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
   headers: {
@@ -98,29 +95,109 @@ const SectionInstance = new Section(
   ".elements"
 );
 
+const avatarFormElement = document.querySelector(
+  "#avatar-pop-up .pop-up__form"
+);
+
 console.log(
   "Elemento .elements encontrado:",
   document.querySelector(".elements")
 ); // ← Adicione
 
 // Função para atualizar o perfil ao enviar o formulário
+function handleAvatarFormSubmit(evt) {
+  evt.preventDefault();
+
+  const submitButton = evt.target.querySelector(".pop-up__submit");
+
+  // Função para controlar o estado do botão
+  function renderLoading(
+    isLoading,
+    button,
+    originalText = "Salvar",
+    loadingText = "Salvando..."
+  ) {
+    if (isLoading) {
+      button.textContent = loadingText;
+      button.disabled = true;
+    } else {
+      button.textContent = originalText;
+      button.disabled = false;
+    }
+  }
+
+  // Inicia o estado de carregamento
+  renderLoading(true, submitButton);
+
+  api
+    .editUserAvatar(avatarInput.value)
+    .then((userData) => {
+      console.log("Avatar atualizado:", userData);
+      // Atualiza a imagem do avatar na página
+      const avatarImage = document.querySelector(".content__avatar");
+      avatarImage.src = userData.avatar;
+
+      renderLoading(false, submitButton);
+      avatarPopup.close();
+    })
+    .catch((err) => {
+      console.log(`Erro ao atualizar avatar: ${err}`);
+      renderLoading(false, submitButton);
+    });
+}
+
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
+
+  const submitButton = evt.target.querySelector(".pop-up__submit");
+
+  // Função para controlar o estado do botão
+  function renderLoading(
+    isLoading,
+    button,
+    originalText = "Salvar",
+    loadingText = "Salvando..."
+  ) {
+    if (isLoading) {
+      button.textContent = loadingText;
+      button.disabled = true;
+    } else {
+      button.textContent = originalText;
+      button.disabled = false;
+    }
+  }
+
+  // Inicia o estado de carregamento
+  renderLoading(true, submitButton);
 
   api
     .editUserInfo(nameInput.value, roleInput.value)
     .then((userData) => {
-      console.log("Dados do usuário atualizados:", userData);
+      console.log("Perfil atualizado:", userData);
+
+      // Atualiza as informações na página
       userInfo.setUserInfo({
         name: userData.name,
         job: userData.about,
       });
+
+      renderLoading(false, submitButton);
       popup.close();
     })
     .catch((err) => {
-      console.log(`Erro ao atualizar informações do usuário: ${err}`);
+      console.log(`Erro ao atualizar perfil: ${err}`);
+      renderLoading(false, submitButton);
     });
 }
+
+avatarEditButton.addEventListener("click", openAvatarPopup);
+avatarFormElement.addEventListener("submit", handleAvatarFormSubmit);
+
+function openAvatarPopup() {
+  avatarInput.value = "";
+  avatarPopup.open();
+}
+
 function openEditPopup() {
   const userData = userInfo.getUserInfo();
   nameInput.value = userData.name;
@@ -142,6 +219,9 @@ function createCard(cardData) {
     (data) => imagePopup.open(data),
     (cardId) => {
       return api.deleteCard(cardId);
+    },
+    (cardId, cardElement) => {
+      handleDeleteClick(cardId, cardElement);
     }
   );
   const cardElement = card.generateCard();
@@ -225,16 +305,23 @@ addCloseButton.addEventListener("click", () => addPopup.close());
 addFormElement.addEventListener("submit", handleAddFormSubmit);
 
 function handleDeleteClick(cardId, cardElement) {
-  confirmDeletePopup.setAction(() => {
+  confirmationPopup.setAction(() => {
+    const confirmButton = confirmationPopup._confirmButton;
+    confirmButton.disabled = true;
+    confirmButton.textContent = "Excluindo...";
+
     api
       .deleteCard(cardId)
       .then(() => {
         cardElement.remove();
+        confirmationPopup.close();
       })
       .catch((err) => {
-        console.error("Erro ao deletar cartão:", err);
+        console.log(`Erro ao deletar cartão: ${err}`);
+        confirmButton.disabled = false;
+        confirmButton.textContent = "Sim";
       });
   });
 
-  confirmDeletePopup.open();
+  confirmationPopup.open();
 }

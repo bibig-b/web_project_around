@@ -1,10 +1,17 @@
 class Card {
-  constructor(data, cardSelector, handleCardClick, handleDeleteCard) {
+  constructor(
+    data,
+    cardSelector,
+    handleCardClick,
+    handleDeleteCard,
+    handleDeleteConfirmation
+  ) {
     this._name = data.name;
     this._link = data.link;
     this._id = data._id;
     this._handleCardClick = handleCardClick;
-    this._handleDeleteCard = handleDeleteCard; // ← Este é o callback da API
+    this._handleDeleteCard = handleDeleteCard;
+    this._handleDeleteConfirmation = handleDeleteConfirmation;
   }
 
   _getTemplate() {
@@ -45,14 +52,9 @@ class Card {
 
   // ← NOVO MÉTODO: lida com o clique do botão delete
   _handleDeleteClick() {
-    this._handleDeleteCard(this._id) // ← Chama o callback da API
-      .then(() => {
-        this._element.remove();
-        this._element = null;
-      })
-      .catch((err) => {
-        console.log(`Erro ao deletar cartão: ${err}`);
-      });
+    if (this._handleDeleteConfirmation) {
+      this._handleDeleteConfirmation(this._id, this._element);
+    }
   }
 
   _handleLikeCard() {
