@@ -102,7 +102,7 @@ const avatarFormElement = document.querySelector(
 console.log(
   "Elemento .elements encontrado:",
   document.querySelector(".elements")
-); // ← Adicione
+);
 
 // Função para atualizar o perfil ao enviar o formulário
 function handleAvatarFormSubmit(evt) {
@@ -133,7 +133,7 @@ function handleAvatarFormSubmit(evt) {
     .editUserAvatar(avatarInput.value)
     .then((userData) => {
       console.log("Avatar atualizado:", userData);
-      // Atualiza a imagem do avatar na página
+
       const avatarImage = document.querySelector(".content__avatar");
       avatarImage.src = userData.avatar;
 

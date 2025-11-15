@@ -104,6 +104,10 @@
   transition: opacity 0.3s ease;
 }
 .content__avatar-container:hover .profile__avatar-edit {
+  background-image: url("../imagens/lapis.png");
+  background-size: 26px 26px;
+  background-repeat: no-repeat;
+  background-position: center;
   opacity: 1;
 }
 

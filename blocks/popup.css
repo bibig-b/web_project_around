@@ -71,6 +71,18 @@
   border-radius: 2px;
 }
 
+.pop-up__submit_confirm {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 100%;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
 .pop-up__submit:hover {
   opacity: 0.8;
 }
