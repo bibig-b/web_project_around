@@ -61,7 +61,6 @@ const formElement = document.querySelector("#edit-pop-up .pop-up__form");
 
 // Seleção dos elementos do pop-up de adicionar card
 const addButton = document.querySelector(".profile__add");
-console.log("addButton:", addButton);
 const addCloseButton = document.querySelector("#add-pop-up .pop-up__close");
 const addFormElement = document.querySelector("#add-pop-up .pop-up__form");
 
@@ -99,11 +98,6 @@ const avatarFormElement = document.querySelector(
   "#avatar-pop-up .pop-up__form"
 );
 
-console.log(
-  "Elemento .elements encontrado:",
-  document.querySelector(".elements")
-);
-
 // Função para atualizar o perfil ao enviar o formulário
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
@@ -132,8 +126,6 @@ function handleAvatarFormSubmit(evt) {
   api
     .editUserAvatar(avatarInput.value)
     .then((userData) => {
-      console.log("Avatar atualizado:", userData);
-
       const avatarImage = document.querySelector(".content__avatar");
       avatarImage.src = userData.avatar;
 
@@ -141,7 +133,6 @@ function handleAvatarFormSubmit(evt) {
       avatarPopup.close();
     })
     .catch((err) => {
-      console.log(`Erro ao atualizar avatar: ${err}`);
       renderLoading(false, submitButton);
     });
 }
@@ -173,8 +164,6 @@ function handleProfileFormSubmit(evt) {
   api
     .editUserInfo(nameInput.value, roleInput.value)
     .then((userData) => {
-      console.log("Perfil atualizado:", userData);
-
       // Atualiza as informações na página
       userInfo.setUserInfo({
         name: userData.name,
@@ -185,7 +174,6 @@ function handleProfileFormSubmit(evt) {
       popup.close();
     })
     .catch((err) => {
-      console.log(`Erro ao atualizar perfil: ${err}`);
       renderLoading(false, submitButton);
     });
 }
@@ -222,17 +210,34 @@ function createCard(cardData) {
     },
     (cardId, cardElement) => {
       handleDeleteClick(cardId, cardElement);
-    }
+    },
+    handleLikeCard
   );
   const cardElement = card.generateCard();
   return cardElement;
 }
+function handleLikeCard(cardId, isLiked) {
+  if (isLiked) {
+    return api.unlikeCard(cardId).then((updatedCard) => {
+      return {
+        isLiked: false,
+        likes: updatedCard.likes,
+      };
+    });
+  } else {
+    return api.likeCard(cardId).then((updatedCard) => {
+      return {
+        isLiked: true,
+        likes: updatedCard.likes,
+      };
+    });
+  }
+}
+
+// Buscar dados do usuário e cards iniciais simultaneamente
 
 Promise.all([api.getUserInfo(), api.getInitialCards()])
   .then(([userData, initialCards]) => {
-    console.log("Cards iniciais:", initialCards);
-    console.log("Dados do usuário:", userData);
-
     userInfo.setUserInfo({
       name: userData.name,
       job: userData.about,
@@ -240,14 +245,10 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
     const avatarImage = document.querySelector(".content__avatar");
     avatarImage.src = userData.avatar;
 
-    console.log("Chamando renderItems com", initialCards.length, "cards"); // ← Adicione
     SectionInstance.renderItems(initialCards);
-    console.log("renderItems foi executado"); // ← Adicione
   })
 
-  .catch((err) => {
-    console.log(`Erro ao buscar dados iniciais: ${err}`);
-  });
+  .catch((err) => {});
 
 function openAddPopup() {
   placeInput.value = "";
@@ -280,20 +281,17 @@ function handleAddFormSubmit(evt) {
     name: placeInput.value,
     link: linkInput.value,
   };
-  console.log("Dados que serão enviados:", newCard);
 
   api
 
     .addNewCard(newCard.name, newCard.link)
     .then((cardData) => {
-      console.log("Resposta do servidor:", cardData);
       const cardElement = createCard(cardData);
       SectionInstance.addItem(cardElement);
       renderLoading(false, submitButton);
       addPopup.close();
     })
     .catch((err) => {
-      console.log(`Erro ao adicionar novo card: ${err}`);
       renderLoading(false, submitButton);
     });
 }
@@ -317,7 +315,6 @@ function handleDeleteClick(cardId, cardElement) {
         confirmationPopup.close();
       })
       .catch((err) => {
-        console.log(`Erro ao deletar cartão: ${err}`);
         confirmButton.disabled = false;
         confirmButton.textContent = "Sim";
       });

@@ -6,7 +6,6 @@ class Section {
   }
 
   renderItems(items) {
-    console.log("Items para renderizar:", items);
     items.forEach((item) => {
       const element = this._renderer(item);
       this._container.append(element);
